@@ -1,38 +1,56 @@
 version: '3.8'
 
 services:
-  # Frontend
-  frontend:
-    build: ./frontend
-    networks:
-      - app-network
-
-  # Backend
-  backend:
-    build: ./backend
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/discover-dollar
-    networks:
-      - app-network
-
-  # Database
+  # Database Service
   mongo:
-    image: mongo:latest
+    image: mongo:6
+    container_name: mongodb
+    restart: always
+    volumes:
+      - mongo-data:/data/db
     networks:
       - app-network
 
-  # Nginx Reverse Proxy (Requirement)
+  # Backend API Service
+  backend:
+    image: tanishkav/mean-backend:latest
+    container_name: backend
+    restart: always
+    environment:
+      MONGO_URI: mongodb://mongo:27017/discover-dollar
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # Frontend Web Service
+  frontend:
+    image: tanishkav/mean-frontend:latest
+    container_name: frontend
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # Nginx Reverse Proxy
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # Mapping the config from your nginx directory to the container
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - frontend
       - backend
     networks:
       - app-network
+
+volumes:
+  mongo-data:
 
 networks:
   app-network:
