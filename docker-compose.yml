@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:8080"
+    depends_on:
+      - mongo
+    environment:
+      - DB_HOST=mongo
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27018:27017"
