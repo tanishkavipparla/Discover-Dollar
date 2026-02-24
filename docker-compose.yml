@@ -1,14 +1,15 @@
-version: "3.8"
 services:
   frontend:
-    build: ./frontend
+    image: tanishkav/mean-frontend:latest
+    restart: always
     ports:
       - "80:80"
     depends_on:
       - backend
 
   backend:
-    build: ./backend
+    image: tanishkav/mean-backend:latest
+    restart: always
     ports:
       - "5000:8080"
     depends_on:
@@ -18,5 +19,9 @@ services:
 
   mongo:
     image: mongo:6
-    ports:
-      - "27018:27017"
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
