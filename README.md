@@ -69,4 +69,4 @@ Deployment Evidence: The repository contains a dedicated section for screenshots
 
 Live Environment: The cloud server remains active, with all services managed by Docker and accessible via the VM’s public IP address.
 
-final port number - http://51.20.121.209/tutorials
+final port number - http://51.20.121.209/
